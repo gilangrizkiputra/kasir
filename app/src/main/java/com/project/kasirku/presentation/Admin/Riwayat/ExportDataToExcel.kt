@@ -10,6 +10,9 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 fun ExportDataToExcel(context: Context, orders: List<Orders>) {
     // Membuat Workbook
@@ -144,8 +147,13 @@ fun ExportDataToExcel(context: Context, orders: List<Orders>) {
         sheet.setColumnWidth(i, 4000)
     }
 
+    // Generate filename with current date and time
+    val dateFormat = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
+    val currentDateTime = dateFormat.format(Date())
+    val fileName = "riwayat_transaksi_$currentDateTime.xlsx"
+
     // **Metode Menyimpan ke Folder Downloads untuk Android 9 (API 28) dan lebih lama**
-    val filePath = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "riwayat_transaksi.xlsx")
+    val filePath = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), fileName)
 
     try {
         val fileOutputStream = FileOutputStream(filePath)

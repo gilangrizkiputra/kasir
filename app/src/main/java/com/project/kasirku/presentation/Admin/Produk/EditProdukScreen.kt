@@ -225,6 +225,7 @@ fun EditProdukContent(
     modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
+    val context = LocalContext.current
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -336,7 +337,13 @@ fun EditProdukContent(
                 }
                 Spacer(modifier = Modifier.height(24.dp))
                 Button(
-                    onClick = { onSimpanProdukClick() },
+                    onClick = {
+                        if (idProduk.isEmpty() || kategori.isEmpty() || namaProduk.isEmpty() || merk.isEmpty() || stok.isEmpty() || hargaBeli.isEmpty() || hargaJual.isEmpty() || satuan.isEmpty()){
+                            Toast.makeText(context, "Data tidak boleh kosong", Toast.LENGTH_SHORT).show()
+                        }else{
+                            onSimpanProdukClick()
+                        }
+                    },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = secondary
                     ),
