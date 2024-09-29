@@ -290,7 +290,8 @@ fun KasirkuApp(
                                             coroutineScope.launch {
                                                 dataStorage.clearLoginStatus()
                                                 navController.navigate(Screen.Masuk.route) {
-                                                    popUpTo(Screen.BerandaKasir.route) { inclusive = true }
+                                                    popUpTo(0) { inclusive = true }
+                                                    launchSingleTop = true
                                                 }
                                             }
                                         }
