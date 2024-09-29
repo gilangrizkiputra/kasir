@@ -3,7 +3,6 @@ package com.project.kasirku.navigation
 sealed class Screen (val route: String) {
     data object Splash: Screen("splash")
     data object Masuk: Screen("masuk")
-    data object Daftar: Screen("daftar")
     data object Beranda: Screen("beranda")
     data object Profil: Screen("profil")
     data object EditProfil: Screen("editProfil")
@@ -18,4 +17,5 @@ sealed class Screen (val route: String) {
     data object Pengaturan: Screen("pengaturan")
     data object BerandaKasir: Screen("berandaKasir")
     data object Keranjang: Screen("keranjang")
+    data object CardKeranjangCheckout: Screen("cardkeranjangcheckout")
 }

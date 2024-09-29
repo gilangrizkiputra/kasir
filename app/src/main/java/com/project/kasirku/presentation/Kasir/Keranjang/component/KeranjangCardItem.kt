@@ -26,13 +26,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberAsyncImagePainter
 import com.project.kasirku.R
 import com.project.kasirku.ui.theme.KasirKuTheme
 import com.project.kasirku.ui.theme.primary
 
 @Composable
 fun KeranjangCardItem(
+    produkName: String,
     quantity: Int,
+    hargaJual: Int,
+    produkImageUrl: String?,
     onTambah: () -> Unit,
     onKurang: () -> Unit,
     modifier: Modifier = Modifier
@@ -52,25 +56,27 @@ fun KeranjangCardItem(
                 .fillMaxWidth()
         ) {
             Image(
-                painter = painterResource(id = R.drawable.image_pangsit),
-                contentDescription = "pangsit bojot",
+                painter = rememberAsyncImagePainter(
+                    model = produkImageUrl ?: R.drawable.background_image_produk_card
+                ),
+                contentDescription = "Gambar Produk",
                 modifier = Modifier
                     .width(76.dp)
                     .height(90.dp)
                     .clip(RoundedCornerShape(5.dp)),
-                contentScale = ContentScale.Crop,
+                contentScale = ContentScale.Crop
             )
             Spacer(modifier = Modifier.padding(start = 8.dp))
             Column(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = "Pangsit Bojot",
+                    text = produkName,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 16.sp,
                 )
                 Text(
-                    text = "Rp. 20.000",
+                    text = "Rp. ${hargaJual}",
                     fontWeight = FontWeight.Normal,
                     fontSize = 14.sp,
                 )

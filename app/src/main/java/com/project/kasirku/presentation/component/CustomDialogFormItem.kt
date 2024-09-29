@@ -125,7 +125,7 @@ fun CustomDialogFormItem(
                     value = kategori,
                     onValueChange = onValueChange,
                     placeable = placeable,
-                    keyboardType = KeyboardType.Text
+                    keyboardType = KeyboardType.Number
                 )
                 Spacer(modifier = Modifier.padding(8.dp))
                 Button(

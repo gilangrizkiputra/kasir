@@ -26,22 +26,28 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberAsyncImagePainter
 import com.project.kasirku.R
 import com.project.kasirku.ui.theme.primary
 import com.project.kasirku.ui.theme.secondaryEdit
 
 @Composable
 fun ProdukCardItem(
-    onItemClick: () -> Unit,
+    produkName: String,
+    hargaJual: String,
+    stok: String,
+    produkImageUrl: String?,
+    idProduk: String,
+    onItemClick: (String) -> Unit,
     onHapusClick: () -> Unit,
-    onEditClick: () -> Unit,
+    onEditClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Surface(
         modifier = modifier
             .fillMaxWidth()
             .padding(top = 16.dp)
-            .clickable { onItemClick() },
+            .clickable { onItemClick(idProduk) },
         color = Color.White,
         shadowElevation = 8.dp,
         shape = RoundedCornerShape(10.dp)
@@ -53,12 +59,14 @@ fun ProdukCardItem(
                 .padding(8.dp)
         ){
             Image(
-                painter = painterResource(id = R.drawable.image_pangsit),
-                contentDescription = "pangsit bojot",
+                painter = rememberAsyncImagePainter(
+                    model = produkImageUrl ?: R.drawable.background_image_produk_card
+                ),
+                contentScale = ContentScale.Crop,
+                contentDescription = "Gambar Produk",
                 modifier = Modifier
                     .size(width = 65.dp, height = 80.dp)
-                    .clip(RoundedCornerShape(5.dp)),
-                contentScale = ContentScale.Crop
+                    .clip(RoundedCornerShape(5.dp))
             )
             Spacer(modifier = Modifier.padding(start = 8.dp))
             Box(
@@ -69,19 +77,19 @@ fun ProdukCardItem(
                         .fillMaxWidth()
                 ){
                     Text(
-                        text = "Pangsit Bojot",
+                        text = produkName,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 16.sp,
                         color = Color.Black
                     )
                     Text(
-                        text = "Rp. 20.000",
+                        text = "Rp. $hargaJual",
                         fontWeight = FontWeight.Normal,
                         fontSize = 14.sp,
                         color = Color.Black
                     )
                     Text(
-                        text = "stock 20",
+                        text = "Stok : $stok",
                         fontWeight = FontWeight.Normal,
                         fontSize = 12.sp,
                         color = Color.Gray
@@ -111,7 +119,7 @@ fun ProdukCardItem(
                         modifier = Modifier
                             .size(35.dp)
                             .clip(CircleShape)
-                            .clickable { onEditClick() },
+                            .clickable { onEditClick(idProduk) },
                         color = secondaryEdit
                     ){
                         Image(
