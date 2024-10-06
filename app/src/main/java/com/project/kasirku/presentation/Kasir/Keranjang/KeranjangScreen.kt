@@ -80,7 +80,7 @@ fun KeranjangScreenContent(
     var showDialogBerhasil by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
     val totalHarga = cartItems.sumOf { it.produk.hargaJual * it.quantity }
-    val keuntungan = cartItems.sumOf { it.produk.hargaBeli * it.quantity }
+    val keuntungan = cartItems.sumOf { totalHarga - it.produk.hargaBeli * it.quantity }
 
     // Tambahkan variabel orderId untuk menyimpan ID order yang berhasil
     var orderId by remember { mutableStateOf<String?>(null) }
