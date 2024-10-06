@@ -199,7 +199,7 @@ fun KeranjangScreenContent(
             fontSize = 16.sp
         )
         LazyColumn(
-            modifier = Modifier.fillMaxHeight()
+            modifier = Modifier.fillMaxHeight().padding(bottom = 90.dp)
         ) {
             items(cartItems) { cartItem ->
                 KeranjangCardItem(
