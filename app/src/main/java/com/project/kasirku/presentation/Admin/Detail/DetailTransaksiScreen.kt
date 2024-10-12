@@ -152,7 +152,7 @@ fun DetailTransaksiContent(
                                     fontSize = 16.sp
                                 )
                                 Text(
-                                    text = "Kasir : Ujang",
+                                    text = "Kasir : ${orders.kasir}",
                                     fontSize = 16.sp
                                 )
                             }
