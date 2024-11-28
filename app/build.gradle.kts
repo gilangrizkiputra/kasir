@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.google.gms.google.services)
+    id ("kotlin-parcelize")
 }
 
 android {
@@ -9,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.project.kasirku"
-        minSdk = 21
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -60,6 +62,9 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.ui.text.google.fonts)
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.database)
+    implementation(libs.firebase.storage.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -81,7 +86,7 @@ dependencies {
     // Date Picker
     implementation("io.github.vanpra.compose-material-dialogs:datetime:0.8.1-rc")
 
-    // Desugar for Java 8+ APIs
+    // Coil
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
     implementation("io.coil-kt:coil-compose:2.4.0")
 
@@ -89,8 +94,8 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended")
 
 
-//    //read and write excel pdf
-//    implementation("org.apache.poi:poi:5.2.3")
-//    implementation("org.apache.poi:poi-ooxml:5.2.3")
-//    implementation("androidx.activity:activity-compose:1.7.0")
+//    read and write excel dan word
+    implementation("org.apache.poi:poi:5.2.3")
+    implementation("org.apache.poi:poi-ooxml:5.2.3")
+    implementation("androidx.activity:activity-compose:1.7.0")
 }

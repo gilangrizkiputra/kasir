@@ -1,5 +1,6 @@
 package com.project.kasirku.presentation.profile
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -31,6 +32,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.google.firebase.auth.EmailAuthProvider
+import com.google.firebase.auth.FirebaseAuth
 import com.project.kasirku.R
 import com.project.kasirku.navigation.Screen
 import com.project.kasirku.presentation.component.FormItem
@@ -45,7 +48,8 @@ fun GantiKataSandiScreen(
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-
+    val auth = FirebaseAuth.getInstance()
+    val currentUser = auth.currentUser
 
     var passwordLama by remember {
         mutableStateOf("")
@@ -59,6 +63,41 @@ fun GantiKataSandiScreen(
         mutableStateOf("")
     }
 
+    fun ubahPassword() {
+
+        if (passwordLama.isEmpty() && passwordBaru.isEmpty() && konfirmPassword.isEmpty()){
+            Toast.makeText(context, "Form belum lengkap", Toast.LENGTH_SHORT).show()
+        }else{
+            if (passwordBaru != konfirmPassword) {
+                Toast.makeText(context, "Kata sandi baru dan konfirmasi tidak cocok", Toast.LENGTH_SHORT).show()
+                return
+            }
+
+            currentUser?.let { user ->
+                val credential = EmailAuthProvider.getCredential(user.email!!, passwordLama)
+
+                user.reauthenticate(credential)
+                    .addOnCompleteListener { reauthTask ->
+                        if (reauthTask.isSuccessful) {
+                            user.updatePassword(passwordBaru)
+                                .addOnCompleteListener { updateTask ->
+                                    if (updateTask.isSuccessful) {
+                                        Toast.makeText(context, "Kata sandi berhasil diubah", Toast.LENGTH_SHORT).show()
+                                        navController.navigate(Screen.Profil.route) {
+                                            popUpTo(Screen.GantiKataSandi.route) { inclusive = true }
+                                        }
+                                    } else {
+                                        Toast.makeText(context, "Gagal mengubah kata sandi: ${updateTask.exception?.message}", Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                        } else {
+                            Toast.makeText(context, "Kata sandi lama salah", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+            }
+        }
+    }
+
     GantiKataSandiContent(
         passwordLama = passwordLama,
         passwordBaru = passwordBaru,
@@ -66,7 +105,7 @@ fun GantiKataSandiScreen(
         onPasswordLamaChange = { passwordLama = it },
         onPasswordBaruChange = { passwordBaru = it },
         onKonfirmPasswordChange = { konfirmPassword = it },
-        onUbahPasswordClick = { /*TODO*/ },
+        onUbahPasswordClick = { ubahPassword() },
         navController,
         modifier
         )
@@ -122,7 +161,7 @@ fun GantiKataSandiContent(
         )
         Spacer(modifier = Modifier.height(32.dp))
         Button(
-            onClick = {},
+            onClick = { onUbahPasswordClick() },
             colors = ButtonDefaults.buttonColors(
                 containerColor = secondary
             ),

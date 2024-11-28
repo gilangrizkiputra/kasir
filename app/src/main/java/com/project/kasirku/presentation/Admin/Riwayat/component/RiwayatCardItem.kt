@@ -23,16 +23,23 @@ import com.project.kasirku.R
 
 @Composable
 fun RiwayatCardItem(
-    onItemClick: () -> Unit,
+    orderId: String,
+    namaPelanggan: String,
+    tanggal: String,
+    quantity: Int,
+    totalHarga: Int,
+    keuntungan: Int,
+    onItemClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
         Surface(
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
             color = Color.White,
             shadowElevation = 6.dp,
             shape = RoundedCornerShape(10.dp),
-            onClick = { onItemClick() }
+            onClick = { onItemClick(orderId) }
         ) {
             Row (
                 verticalAlignment = Alignment.CenterVertically,
@@ -51,7 +58,7 @@ fun RiwayatCardItem(
                 ) {
                     Row{
                         Text(
-                            text = "#001",
+                            text = "#${orderId}",
                             fontSize = 11.sp
                         )
                         Icon(
@@ -62,7 +69,7 @@ fun RiwayatCardItem(
                                 .size(12.dp)
                         )
                         Text(
-                            text = "Asep",
+                            text = namaPelanggan,
                             fontSize = 11.sp
                         )
                     }
@@ -81,15 +88,15 @@ fun RiwayatCardItem(
                                 .size(12.dp)
                         )
                         Text(
-                            text = "Kamis, 09/08/2024, 12.00",
+                            text = tanggal,
                             fontSize = 11.sp
                         )
 
                     }
                     Text(
-                        text = "Jumlah Pesanan : 1 " +
-                                "\nTotal Harga : Rp. 24.000 " +
-                                "\nTotal Keuntungan : Rp. 4.000",
+                        text = "Jumlah Pesanan : ${quantity} " +
+                                "\nTotal Harga : Rp. ${totalHarga} " +
+                                "\nTotal Keuntungan : Rp. ${keuntungan}",
                         fontSize = 11.sp,
                         lineHeight = 18.sp
                     )

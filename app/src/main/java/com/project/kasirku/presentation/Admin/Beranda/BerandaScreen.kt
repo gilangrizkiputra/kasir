@@ -1,5 +1,6 @@
 package com.project.kasirku.presentation.Admin.Beranda
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -23,7 +24,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.project.kasirku.R
+import com.project.kasirku.model.Orders
+import com.project.kasirku.model.Produk
 import com.project.kasirku.presentation.Admin.Beranda.component.ProdukCardHomeItem
 import com.project.kasirku.ui.theme.poppinsFontFamily
 import com.project.kasirku.ui.theme.secondary
@@ -33,7 +40,34 @@ fun BerandaScreen(
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
+    var totalPendapatan by remember { mutableStateOf(0) }
+    var jumlahProduk by remember { mutableStateOf(0) }
+    var stokProduk by remember { mutableStateOf(0) }
+    var produkTerjual by remember { mutableStateOf(0) }
+    var jumlahKategori by remember { mutableStateOf(0) }
+
+    // Memanggil fungsi untuk mengambil data dari Firebase
+    LaunchedEffect(Unit) {
+        fetchProdukData { produkList ->
+            jumlahProduk = produkList.size
+            stokProduk = produkList.sumOf { it.stok }
+            jumlahKategori = produkList.map { it.kategori }.distinct().size
+        }
+
+        fetchOrderData { ordersList ->
+            totalPendapatan = ordersList.sumOf { it.totalHarga }
+            produkTerjual = ordersList.sumOf { order ->
+                order.items.sumOf { it.quantity }
+            }
+        }
+    }
+
     BerandaScreenContent(
+        totalPendapatan = totalPendapatan,
+        jumlahProduk = jumlahProduk,
+        stokProduk = stokProduk,
+        produkTerjual = produkTerjual,
+        jumlahKategori = jumlahKategori,
         navController = navController,
         modifier = Modifier
     )
@@ -41,6 +75,11 @@ fun BerandaScreen(
 
 @Composable
 fun BerandaScreenContent(
+    totalPendapatan: Int,
+    jumlahProduk: Int,
+    stokProduk: Int,
+    produkTerjual: Int,
+    jumlahKategori: Int,
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
@@ -70,14 +109,14 @@ fun BerandaScreenContent(
                 )
                 Column {
                     Text(
-                        text = "Total Pendapatan bulan ini",
+                        text = "Total Pendapatan",
                         fontFamily = poppinsFontFamily,
                         fontWeight = FontWeight.Normal,
                         fontSize = 12.sp,
                         color = Color.White
                     )
                     Text(
-                        text = "Rp. 500.000",
+                        text = "Rp. ${totalPendapatan}",
                         fontFamily = poppinsFontFamily,
                         fontWeight = FontWeight.Normal,
                         fontSize = 16.sp,
@@ -105,7 +144,7 @@ fun BerandaScreenContent(
         ) {
             ProdukCardHomeItem(
                 title = "Jumlah",
-                count = "10",
+                count = "${jumlahProduk}",
                 icon = R.drawable.ic_jumlah_produk
             )
 
@@ -113,7 +152,7 @@ fun BerandaScreenContent(
 
             ProdukCardHomeItem(
                 title = "Stok",
-                count = "10",
+                count = "${stokProduk}",
                 icon = R.drawable.ic_stock_produk
             )
         }
@@ -126,7 +165,7 @@ fun BerandaScreenContent(
         ) {
             ProdukCardHomeItem(
                 title = "Terjual",
-                count = "10",
+                count = "${produkTerjual}",
                 icon = R.drawable.ic_produk_terjual
             )
 
@@ -134,12 +173,48 @@ fun BerandaScreenContent(
 
             ProdukCardHomeItem(
                 title = "Kategori",
-                count = "10",
+                count = "${jumlahKategori}",
                 icon = R.drawable.ic_produk_kategori
             )
         }
     }
 }
 
+// Fungsi untuk mengambil data produk dari Firebase
+fun fetchProdukData(onDataFetched: (List<Produk>) -> Unit) {
+    val database = FirebaseDatabase.getInstance().getReference("produk")
+    database.addListenerForSingleValueEvent(object : ValueEventListener {
+        override fun onDataChange(snapshot: DataSnapshot) {
+            val produkList = mutableListOf<Produk>()
+            for (data in snapshot.children) {
+                val produk = data.getValue(Produk::class.java)
+                produk?.let { produkList.add(it) }
+            }
+            onDataFetched(produkList)
+        }
 
+        override fun onCancelled(error: DatabaseError) {
+            Log.e("Firebase", "Error fetching produk data: ${error.message}")
+        }
+    })
+}
+
+// Fungsi untuk mengambil data orders dari Firebase
+fun fetchOrderData(onDataFetched: (List<Orders>) -> Unit) {
+    val database = FirebaseDatabase.getInstance().getReference("orders")
+    database.addListenerForSingleValueEvent(object : ValueEventListener {
+        override fun onDataChange(snapshot: DataSnapshot) {
+            val ordersList = mutableListOf<Orders>()
+            for (data in snapshot.children) {
+                val order = data.getValue(Orders::class.java)
+                order?.let { ordersList.add(it) }
+            }
+            onDataFetched(ordersList)
+        }
+
+        override fun onCancelled(error: DatabaseError) {
+            Log.e("Firebase", "Error fetching orders data: ${error.message}")
+        }
+    })
+}
 

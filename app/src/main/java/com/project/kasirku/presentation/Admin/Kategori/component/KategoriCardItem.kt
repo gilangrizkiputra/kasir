@@ -32,6 +32,8 @@ import com.project.kasirku.ui.theme.secondaryEdit
 
 @Composable
 fun KategoriCardItem(
+    kategoriName: String,
+    createdAt: String,
     onHapusClick: () -> Unit,
     onEditClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -51,12 +53,12 @@ fun KategoriCardItem(
         ) {
             Column {
                 Text(
-                    text = "Makakan",
+                    text = kategoriName,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 16.sp
                 )
                 Text(
-                    text = "09/09/2024",
+                    text = createdAt,
                     fontWeight = FontWeight.Normal,
                     fontSize = 10.sp,
                     color = Color.Gray
