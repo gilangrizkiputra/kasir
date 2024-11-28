@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import coil.compose.rememberAsyncImagePainter
 import com.project.kasirku.R
 import com.project.kasirku.ui.theme.KasirKuTheme
 import com.project.kasirku.ui.theme.primary
@@ -47,6 +48,7 @@ fun CustomDialogCheckoutItem(
     namaProduk: String,
     buttonText: String,
     colorBackground: Color,
+    produkImageUrl: String,
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
     onTambah: () -> Unit,
@@ -129,13 +131,16 @@ fun CustomDialogCheckoutItem(
                         .padding(vertical = 8.dp)
                 ){
                     Image(
-                        painter = painterResource(id = R.drawable.image_pangsit_bojot),
-                        contentDescription = "produk",
+                        painter = rememberAsyncImagePainter(
+                            model = produkImageUrl ?: R.drawable.background_image_produk_card
+                        ),
+                        contentDescription = "Gambar Produk",
                         modifier = Modifier
                             .width(71.dp)
                             .height(65.dp)
                             .clip(RoundedCornerShape(5.dp)),
                         contentScale = ContentScale.Crop
+
                     )
                     Button(
                         onClick = onTambah,

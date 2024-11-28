@@ -35,7 +35,6 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.project.kasirku.R
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CustomDialogFormItem(
     title: String,
