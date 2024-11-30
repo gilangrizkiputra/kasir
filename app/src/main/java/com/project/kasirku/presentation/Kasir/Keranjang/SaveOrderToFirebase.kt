@@ -15,35 +15,27 @@ fun saveOrderToFirebase(
     kembali: Int,
     keuntungan: Int,
     cartItems: MutableList<CartItem>,
-    onSuccess: (String) -> Unit,  // Mengembalikan orderId pada callback success
+    onSuccess: (String) -> Unit,
     onFailure: (String) -> Unit
 ) {
     val auth = FirebaseAuth.getInstance()
     val currentUser = auth.currentUser
 
-    // Periksa apakah pengguna sedang login
     if (currentUser != null) {
         val userId = currentUser.uid
 
-        // Referensi ke database pengguna berdasarkan userId
         val userDatabase = FirebaseDatabase.getInstance().getReference("user").child(userId)
-
-        // Ambil data pengguna dari Firebase Realtime Database
         userDatabase.get().addOnSuccessListener { dataSnapshot ->
             val username = dataSnapshot.child("username").getValue(String::class.java)
 
-            // Jika username berhasil diambil
             if (username != null) {
-                // Buat pesanan dan masukkan username kasir
                 val database = FirebaseDatabase.getInstance().getReference("orders")
                 val produkDatabase = FirebaseDatabase.getInstance().getReference("produk")
-
-                // Generate random orderId
                 val orderId = Random.nextInt(1000, 9999).toString()
 
                 val order = mutableMapOf<String, Any>(
                     "orderId" to orderId,
-                    "kasir" to username, // Masukkan username kasir
+                    "kasir" to username,
                     "namaPelanggan" to namaPelanggan,
                     "catatan" to catatan,
                     "totalHarga" to totalHarga,
@@ -61,17 +53,14 @@ fun saveOrderToFirebase(
                     }
                 )
 
-                // Simpan pesanan ke database
                 database.child(orderId).setValue(order)
                     .addOnSuccessListener {
-                        // Loop melalui cartItems dan kurangi stok produk di Firebase
                         cartItems.forEach { item ->
                             val produkRef = item.produk.idProduk?.let { it1 -> produkDatabase.child(it1) }
                             produkRef?.get()?.addOnSuccessListener { dataSnapshot ->
                                 val stokSaatIni = dataSnapshot.child("stok").getValue(Int::class.java) ?: 0
                                 val stokBaru = stokSaatIni - item.quantity
 
-                                // Update stok produk di Firebase
                                 if (stokBaru >= 0) {
                                     produkRef?.child("stok")?.setValue(stokBaru)
                                 } else {
@@ -82,7 +71,6 @@ fun saveOrderToFirebase(
                             }
                         }
 
-                        // Panggil onSuccess dan kirimkan orderId
                         onSuccess(orderId)
                     }
                     .addOnFailureListener { exception ->

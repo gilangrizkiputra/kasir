@@ -67,9 +67,8 @@ fun RiwayatScreen(
     val orderList = remember { mutableStateOf<List<Orders>>(emptyList()) }
     val isLoading = remember { mutableStateOf(true) }
     val isError = remember { mutableStateOf(false) }
-    val database = FirebaseDatabase.getInstance().getReference("orders")
 
-    // Mengambil data produk dari Firebase
+    val database = FirebaseDatabase.getInstance().getReference("orders")
     LaunchedEffect(Unit) {
         database.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -80,7 +79,7 @@ fun RiwayatScreen(
                         orderItems.add(orders)
                     }
                 }
-                orderList.value = orderItems // Update state dengan daftar produk
+                orderList.value = orderItems
                 isLoading.value = false
             }
 
@@ -91,20 +90,15 @@ fun RiwayatScreen(
         })
     }
 
-    // Fungsi untuk memfilter transaksi berdasarkan tanggal awal dan akhir
     fun filterOrdersByDateRange() {
         if (firstDate.isNotEmpty() && endDate.isNotEmpty()) {
-            // Gunakan DateTimeFormatter yang lebih fleksibel dengan satu atau dua digit untuk hari dan bulan
             val formatter = DateTimeFormatter.ofPattern("d/M/yyyy HH:mm:ss")
 
-            // Konversi tanggal awal dan akhir yang dipilih oleh pengguna
             val startDate = LocalDateTime.parse("$firstDate 00:00:00", formatter)
             val endDate = LocalDateTime.parse("$endDate 23:59:59", formatter)
 
-            // Filter daftar order berdasarkan rentang tanggal
             filteredOrderList.value = orderList.value.filter { order ->
                 val orderDate = LocalDateTime.parse(order.tanggal, DateTimeFormatter.ofPattern("EEEE, d/M/yyyy, HH:mm", Locale("id", "ID")))
-                // Hanya sertakan orders yang tanggalnya berada dalam rentang
                 (orderDate.isEqual(startDate) || orderDate.isAfter(startDate)) &&
                         (orderDate.isEqual(endDate) || orderDate.isBefore(endDate))
             }
@@ -119,7 +113,7 @@ fun RiwayatScreen(
         endDate = endDate,
         onFirstDateChange = { firstDate = it },
         onEndDateChange = { endDate = it },
-        onFilterClick = { filterOrdersByDateRange() },  // Panggil filter saat tombol diklik
+        onFilterClick = { filterOrdersByDateRange() },
         navController = navController,
         modifier = modifier
     )

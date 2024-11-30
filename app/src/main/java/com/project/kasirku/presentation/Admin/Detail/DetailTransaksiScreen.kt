@@ -40,8 +40,8 @@ fun DetailTransaksiScreen(
     val ordersDetail = remember { mutableStateOf<Orders?>(null) }
     val isLoading = remember { mutableStateOf(true) }
     val isError = remember { mutableStateOf(false) }
-    val database = FirebaseDatabase.getInstance().getReference("orders").child(orderId ?: "")
 
+    val database = FirebaseDatabase.getInstance().getReference("orders").child(orderId ?: "")
     LaunchedEffect(orderId) {
         database.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {

@@ -81,8 +81,8 @@ fun EditProdukScreen(
     var isUploading by remember { mutableStateOf(false) }
     var produkImageUrl by remember { mutableStateOf("") }
 
+    val database = FirebaseDatabase.getInstance().getReference("produk")
     LaunchedEffect(idProduk) {
-        val database = FirebaseDatabase.getInstance().getReference("produk")
         database.child(idProduk).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val produk = snapshot.getValue(Produk::class.java)
@@ -113,7 +113,7 @@ fun EditProdukScreen(
         ref.putFile(fileUri)
             .addOnSuccessListener {
                 ref.downloadUrl.addOnSuccessListener { uri ->
-                    onSuccess(uri.toString()) // Dapatkan URL unduhan gambar
+                    onSuccess(uri.toString())
                     isUploading = false
                 }
             }
@@ -134,7 +134,6 @@ fun EditProdukScreen(
     }
 
     fun updateProdukInDatabase(imageUrl: String) {
-        val database = FirebaseDatabase.getInstance().getReference("produk")
         val produk = Produk(
             idProduk = idProduk,
             namaProduk = namaProduk,
@@ -161,12 +160,10 @@ fun EditProdukScreen(
 
     fun onSimpanProdukClick() {
         if (imageUri != null) {
-            // Jika ada gambar baru yang dipilih, upload dulu
             uploadImageToFirebaseStorage(imageUri!!) { downloadUrl ->
                 updateProdukInDatabase(downloadUrl)
             }
         } else {
-            // Jika tidak ada gambar baru, gunakan URL gambar lama
             updateProdukInDatabase(produkImageUrl)
         }
     }
