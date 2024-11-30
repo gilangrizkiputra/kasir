@@ -101,12 +101,10 @@ fun KategoriContent(
     var selectedKategoriId by remember { mutableStateOf<String?>(null) }
 
 
-    // Fungsi untuk menambahkan kategori ke Firebase
     fun addKategoriToDatabase(kategoriName: String) {
-        val kategoriId = database.push().key // Generate unique key for each kategori
-        val createdAt = getCurrentDate() // Dapatkan tanggal saat ini
+        val kategoriId = database.push().key
+        val createdAt = getCurrentDate()
 
-        // Data yang akan disimpan ke Firebase
         val kategoriData = Kategori(id = kategoriId, name = kategoriName, createdAt = createdAt)
 
         kategoriId?.let {
@@ -121,7 +119,7 @@ fun KategoriContent(
     }
 
     fun updateKategoriInDatabase(kategoriId: String, kategoriName: String) {
-        val updatedAt = getCurrentDate() // Dapatkan tanggal saat ini untuk pembaruan
+        val updatedAt = getCurrentDate()
         val kategoriData = mapOf<String, Any>(
             "name" to kategoriName,
             "updatedAt" to updatedAt

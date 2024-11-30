@@ -46,7 +46,6 @@ fun BerandaScreen(
     var produkTerjual by remember { mutableStateOf(0) }
     var jumlahKategori by remember { mutableStateOf(0) }
 
-    // Memanggil fungsi untuk mengambil data dari Firebase
     LaunchedEffect(Unit) {
         fetchProdukData { produkList ->
             jumlahProduk = produkList.size
@@ -180,7 +179,6 @@ fun BerandaScreenContent(
     }
 }
 
-// Fungsi untuk mengambil data produk dari Firebase
 fun fetchProdukData(onDataFetched: (List<Produk>) -> Unit) {
     val database = FirebaseDatabase.getInstance().getReference("produk")
     database.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -199,7 +197,6 @@ fun fetchProdukData(onDataFetched: (List<Produk>) -> Unit) {
     })
 }
 
-// Fungsi untuk mengambil data orders dari Firebase
 fun fetchOrderData(onDataFetched: (List<Orders>) -> Unit) {
     val database = FirebaseDatabase.getInstance().getReference("orders")
     database.addListenerForSingleValueEvent(object : ValueEventListener {

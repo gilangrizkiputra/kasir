@@ -53,13 +53,12 @@ fun ProdukScreen(
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
-    val produkList = remember { mutableStateOf<List<Produk>>(emptyList()) }
     val isLoading = remember { mutableStateOf(true) }
     val isError = remember { mutableStateOf(false) }
     val selectedCategory = remember { mutableStateOf<Kategori?>(null) }
-    val database = FirebaseDatabase.getInstance().getReference("produk")
 
-    // Mengambil data produk dari Firebase
+    val produkList = remember { mutableStateOf<List<Produk>>(emptyList()) }
+    val database = FirebaseDatabase.getInstance().getReference("produk")
     LaunchedEffect(Unit) {
         database.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -70,7 +69,7 @@ fun ProdukScreen(
                         produkItems.add(produk)
                     }
                 }
-                produkList.value = produkItems // Update state dengan daftar produk
+                produkList.value = produkItems
                 isLoading.value = false
             }
 

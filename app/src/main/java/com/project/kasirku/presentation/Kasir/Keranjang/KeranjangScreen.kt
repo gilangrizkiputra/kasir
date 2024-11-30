@@ -75,16 +75,13 @@ fun KeranjangScreenContent(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
-    var bayar by remember { mutableStateOf("") }
-    var showDialogBayar by remember { mutableStateOf(false) }
-    var showDialogBerhasil by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
     val totalHarga = cartItems.sumOf { it.produk.hargaJual * it.quantity }
     val keuntungan = cartItems.sumOf { totalHarga - it.produk.hargaBeli * it.quantity }
-
-    // Tambahkan variabel orderId untuk menyimpan ID order yang berhasil
+    var bayar by remember { mutableStateOf("") }
+    var showDialogBayar by remember { mutableStateOf(false) }
+    var showDialogBerhasil by remember { mutableStateOf(false) }
     var orderId by remember { mutableStateOf<String?>(null) }
-
     if (showDialogBerhasil){
         CustomDialogItem(
             title = "Sukses",
@@ -96,7 +93,6 @@ fun KeranjangScreenContent(
                 navController.navigate(Screen.BerandaKasir.route)
             },
             onConfirm = {
-                // Generate PDF hanya jika orderId tidak null
                 orderId?.let { id ->
                     fetchOrderById(id) { fetchedOrder ->
                         if (fetchedOrder != null) {
@@ -107,7 +103,6 @@ fun KeranjangScreenContent(
                         }
                     }
                 }
-                // Navigasi setelah PDF berhasil digenerate
                 showDialogBerhasil = false
                 showDialogBayar = false
                 bayar = ""
@@ -140,7 +135,6 @@ fun KeranjangScreenContent(
                         keuntungan = keuntungan,
                         cartItems = cartItems,
                         onSuccess = { newOrderId ->
-                            // Simpan orderId setelah pesanan berhasil
                             orderId = newOrderId
                             showDialogBerhasil = true
                             bayar = ""
@@ -158,7 +152,6 @@ fun KeranjangScreenContent(
             }
         )
     }
-
 
     Column(
         modifier = modifier.padding(16.dp)
