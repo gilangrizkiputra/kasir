@@ -25,6 +25,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.google.firebase.database.DataSnapshot
@@ -178,7 +179,9 @@ fun KategoriContent(
                         kategori = ""
                     }
                 }
-            })
+            },
+            keyboardType = KeyboardType.Text
+        )
     } else if (showDialogTambah) {
         CustomDialogFormItem(
             title = "Tambah Kategori",
@@ -201,7 +204,9 @@ fun KategoriContent(
                     showDialogTambah = false
                     kategori = ""
                 }
-            })
+            },
+            keyboardType = KeyboardType.Text
+        )
     }
 
     Column(

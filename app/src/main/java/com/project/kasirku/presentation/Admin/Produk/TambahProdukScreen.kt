@@ -68,8 +68,6 @@ fun TambahProdukScreen(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
-    val storageReference = FirebaseStorage.getInstance().reference
-    val database = FirebaseDatabase.getInstance().getReference("produk")
 
     var idProduk by remember { mutableStateOf("") }
     var namaProduk by remember { mutableStateOf("") }
@@ -80,8 +78,10 @@ fun TambahProdukScreen(
     var satuan by remember { mutableStateOf("") }
     var selectedKategori by remember { mutableStateOf("") }
     var imageUri by remember { mutableStateOf<Uri?>(null) }
-    var isUploading by remember { mutableStateOf(false) }
 
+    val storageReference = FirebaseStorage.getInstance().reference
+    val database = FirebaseDatabase.getInstance().getReference("produk")
+    var isUploading by remember { mutableStateOf(false) }
     fun uploadImageToFirebaseStorage(fileUri: Uri, onSuccess: (String) -> Unit) {
         val fileName = UUID.randomUUID().toString() + ".jpg"
         val ref = storageReference.child("produk_images/$fileName")
@@ -90,8 +90,8 @@ fun TambahProdukScreen(
 
         ref.putFile(fileUri)
             .addOnSuccessListener {
-                ref.downloadUrl.addOnSuccessListener { uri ->
-                    onSuccess(uri.toString()) // Dapatkan URL unduhan gambar
+                ref.downloadUrl.addOnSuccessListener { uri -> //ngamgil link download url
+                    onSuccess(uri.toString())
                     isUploading = false
                 }
             }

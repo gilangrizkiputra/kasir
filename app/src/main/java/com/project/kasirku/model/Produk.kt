@@ -15,3 +15,5 @@ data class Produk(
     var satuan: String = "",
     var produkImageUrl: String = ""
 ): Parcelable
+
+

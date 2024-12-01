@@ -46,7 +46,6 @@ fun DetailProdukScreen(
     val isError = remember { mutableStateOf(false) }
 
     val database = FirebaseDatabase.getInstance().getReference("produk").child(idProduk ?: "")
-
     LaunchedEffect(idProduk) {
         database.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
