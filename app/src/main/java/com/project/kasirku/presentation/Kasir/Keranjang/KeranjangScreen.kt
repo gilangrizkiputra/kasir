@@ -22,6 +22,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -79,37 +80,10 @@ fun KeranjangScreenContent(
     val totalHarga = cartItems.sumOf { it.produk.hargaJual * it.quantity }
     val keuntungan = cartItems.sumOf { totalHarga - it.produk.hargaBeli * it.quantity }
     var bayar by remember { mutableStateOf("") }
+    var orderId by remember { mutableStateOf<String?>(null) }
     var showDialogBayar by remember { mutableStateOf(false) }
     var showDialogBerhasil by remember { mutableStateOf(false) }
-    var orderId by remember { mutableStateOf<String?>(null) }
-    if (showDialogBerhasil){
-        CustomDialogItem(
-            title = "Sukses",
-            deskDialog = "Pembayaran berhasil, ingin cetak struck?",
-            onDismiss = {
-                showDialogBerhasil = false
-                showDialogBayar = false
-                bayar = ""
-                navController.navigate(Screen.BerandaKasir.route)
-            },
-            onConfirm = {
-                orderId?.let { id ->
-                    fetchOrderById(id) { fetchedOrder ->
-                        if (fetchedOrder != null) {
-                            generatePdf(fetchedOrder, context)
-                            Toast.makeText(context, "PDF berhasil dibuat!", Toast.LENGTH_SHORT).show()
-                        } else {
-                            Toast.makeText(context, "Order tidak ditemukan.", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                }
-                showDialogBerhasil = false
-                showDialogBayar = false
-                bayar = ""
-                navController.navigate(Screen.BerandaKasir.route)
-            }
-        )
-    }else if (showDialogBayar) {
+    if (showDialogBayar) {
         CustomDialogFormItem(
             title = "Bayar",
             deskDialog = "Tanggal Bayar",
@@ -137,6 +111,7 @@ fun KeranjangScreenContent(
                         onSuccess = { newOrderId ->
                             orderId = newOrderId
                             showDialogBerhasil = true
+                            showDialogBayar = false
                             bayar = ""
                             cartItems.clear()
                         },
@@ -149,9 +124,38 @@ fun KeranjangScreenContent(
                     errorMessage = "Jumlah pembayaran tidak cukup!"
                     Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
                 }
+            },
+            keyboardType = KeyboardType.Number
+        )
+    } else if (showDialogBerhasil) {
+        CustomDialogItem(
+            title = "Sukses",
+            deskDialog = "Pembayaran berhasil, ingin cetak struk?",
+            onDismiss = {
+                showDialogBayar = false
+                showDialogBerhasil = false
+                bayar = ""
+                navController.navigate(Screen.BerandaKasir.route)
+            },
+            onConfirm = {
+                orderId?.let { id ->
+                    fetchOrderById(id) { fetchedOrder ->
+                        if (fetchedOrder != null) {
+                            generatePdf(fetchedOrder, context)
+                            Toast.makeText(context, "PDF berhasil dibuat!", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(context, "Order tidak ditemukan.", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+                showDialogBayar = false
+                showDialogBerhasil = false
+                bayar = ""
+                navController.navigate(Screen.BerandaKasir.route)
             }
         )
     }
+
 
     Column(
         modifier = modifier.padding(16.dp)
@@ -191,26 +195,45 @@ fun KeranjangScreenContent(
             fontWeight = FontWeight.SemiBold,
             fontSize = 16.sp
         )
-        LazyColumn(
-            modifier = Modifier.fillMaxHeight().padding(bottom = 90.dp)
-        ) {
-            items(cartItems) { cartItem ->
-                KeranjangCardItem(
-                    produkName = cartItem.produk.namaProduk,
-                    quantity = cartItem.quantity,
-                    hargaJual = cartItem.produk.hargaJual,
-                    produkImageUrl = cartItem.produk.produkImageUrl,
-                    onTambah = {
-                        val updatedItem = cartItem.copy(quantity = cartItem.quantity + 1)
-                        cartItems[cartItems.indexOf(cartItem)] = updatedItem
-                    },
-                    onKurang = {
-                        if (cartItem.quantity > 1) {
-                            val updatedItem = cartItem.copy(quantity = cartItem.quantity - 1)
-                            cartItems[cartItems.indexOf(cartItem)] = updatedItem
-                        }
-                    }
+        if (cartItems.isEmpty()){
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 150.dp)
+            ) {
+                Text(
+                    text = "Pesanan Tidak Tersedia",
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 14.sp,
+                    color = Color.Gray
                 )
+            }
+        }else{
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .padding(bottom = 90.dp)
+            ) {
+                items(cartItems) { cartItem ->
+                    KeranjangCardItem(
+                        produkName = cartItem.produk.namaProduk,
+                        quantity = cartItem.quantity,
+                        hargaJual = cartItem.produk.hargaJual,
+                        produkImageUrl = cartItem.produk.produkImageUrl,
+                        onTambah = {
+                            val updatedItem = cartItem.copy(quantity = cartItem.quantity + 1)
+                            cartItems[cartItems.indexOf(cartItem)] = updatedItem
+                        },
+                        onKurang = {
+                            if (cartItem.quantity > 1) {
+                                val updatedItem = cartItem.copy(quantity = cartItem.quantity - 1)
+                                cartItems[cartItems.indexOf(cartItem)] = updatedItem
+                            }
+                        }
+                    )
+                }
             }
         }
     }
@@ -236,7 +259,9 @@ fun KeranjangScreenContent(
                     onClick = {
                         if (namaPelanggan.isEmpty() || catatan.isEmpty()){
                             Toast.makeText(context, "Nama pelanggan dan catatan tidak boleh kosong", Toast.LENGTH_SHORT).show()
-                        }else{
+                        }else if (cartItems.isEmpty()){
+                            Toast.makeText(context, "Keranjang kosong! Tidak ada pesanan untuk dibayar", Toast.LENGTH_SHORT).show()
+                        } else{
                             showDialogBayar = true
                         }
                     },

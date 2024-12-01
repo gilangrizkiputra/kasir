@@ -47,6 +47,7 @@ fun CustomDialogFormItem(
     onValueChange: (String) -> Unit,
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
+    keyboardType: KeyboardType,
     modifier: Modifier = Modifier
 ) {
     val currentDate = getCurrentDate()
@@ -124,7 +125,7 @@ fun CustomDialogFormItem(
                     value = kategori,
                     onValueChange = onValueChange,
                     placeable = placeable,
-                    keyboardType = KeyboardType.Text
+                    keyboardType = keyboardType
                 )
                 Spacer(modifier = Modifier.padding(8.dp))
                 Button(

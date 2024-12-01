@@ -69,14 +69,14 @@ fun DetailTransaksiScreen(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            Text("Gagal memuat data produk", color = Color.Red)
+            Text("Gagal memuat data transaksi", color = Color.Red)
         }
     } else if (ordersDetail.value == null) {
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            Text("Produk tidak ditemukan", color = Color.Gray)
+            Text("transaksi tidak ditemukan", color = Color.Gray)
         }
     } else {
         DetailTransaksiContent(

@@ -77,11 +77,11 @@ fun EditProdukScreen(
     var hargaJual by remember { mutableStateOf("") }
     var satuan by remember { mutableStateOf("") }
     var kategori by remember { mutableStateOf("") }
-    var imageUri by remember { mutableStateOf<Uri?>(null) }
-    var isUploading by remember { mutableStateOf(false) }
     var produkImageUrl by remember { mutableStateOf("") }
 
     val database = FirebaseDatabase.getInstance().getReference("produk")
+    var isUploading by remember { mutableStateOf(false) }
+    var imageUri by remember { mutableStateOf<Uri?>(null) }
     LaunchedEffect(idProduk) {
         database.child(idProduk).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
