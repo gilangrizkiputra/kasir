@@ -97,10 +97,16 @@ fun RiwayatScreen(
             val startDate = LocalDateTime.parse("$firstDate 00:00:00", formatter)
             val endDate = LocalDateTime.parse("$endDate 23:59:59", formatter)
 
-            filteredOrderList.value = orderList.value.filter { order ->
-                val orderDate = LocalDateTime.parse(order.tanggal, DateTimeFormatter.ofPattern("EEEE, d/M/yyyy, HH:mm", Locale("id", "ID")))
+            val filtered = orderList.value.filter { order ->
+                val orderDate = LocalDateTime.parse(order.tanggal,
+                    DateTimeFormatter.ofPattern("EEEE, d/M/yyyy, HH:mm", Locale("id", "ID")))
                 (orderDate.isEqual(startDate) || orderDate.isAfter(startDate)) &&
                         (orderDate.isEqual(endDate) || orderDate.isBefore(endDate))
+            }
+
+            filteredOrderList.value = filtered.sortedBy { order ->
+                LocalDateTime.parse(order.tanggal,
+                    DateTimeFormatter.ofPattern("EEEE, d/M/yyyy, HH:mm", Locale("id", "ID")))
             }
         }
     }

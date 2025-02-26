@@ -78,7 +78,7 @@ fun KeranjangScreenContent(
     val context = LocalContext.current
     var errorMessage by remember { mutableStateOf("") }
     val totalHarga = cartItems.sumOf { it.produk.hargaJual * it.quantity }
-    val keuntungan = cartItems.sumOf { totalHarga - it.produk.hargaBeli * it.quantity }
+    val keuntungan = cartItems.sumOf { (it.produk.hargaJual - it.produk.hargaBeli) * it.quantity }
     var bayar by remember { mutableStateOf("") }
     var orderId by remember { mutableStateOf<String?>(null) }
     var showDialogBayar by remember { mutableStateOf(false) }

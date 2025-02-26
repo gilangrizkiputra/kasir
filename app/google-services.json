@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "319766302660",
+    "project_id": "db-kasirku",
+    "storage_bucket": "db-kasirku.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:319766302660:android:9370e9985774e71a655e91",
+        "android_client_info": {
+          "package_name": "com.project.kasirku"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAVFmH5Nh9_V-0NrzatBSvyArqmABLmAdA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
